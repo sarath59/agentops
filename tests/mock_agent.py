@@ -12,7 +12,7 @@ print('init')
 ao_client = agentops.Client(tags=['mock tests'])
 
 
-@ao_client.record_action('action')
+@ao_client.record_function('action')
 def sleep_func(sleep):
     time.sleep(sleep)
     print('sync sleep')
@@ -22,7 +22,7 @@ def sleep_func(sleep):
         ...
 
 
-@ao_client.record_action('async')
+@ao_client.record_function('async')
 async def sleep_func_async(sleep):
     await asyncio.sleep(sleep)
     print('async sleep')
@@ -32,7 +32,7 @@ async def sleep_func_async(sleep):
         ...
 
 
-@ao_client.record_action('multi')
+@ao_client.record_function('multi')
 def multi_event(sleep):
     sleep_func(1)
     time.sleep(sleep)

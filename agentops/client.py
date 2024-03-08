@@ -47,7 +47,7 @@ class Client(metaclass=ExceptionHandlerMeta):
 
     def __init__(self, api_key: Optional[str] = None,
                  tags: Optional[List[str]] = None,
-                 endpoint: Optional[str] = 'https://api.agentops.ai',
+                 endpoint: Optional[str] = 'https://localhost:8000',
                  max_wait_time: Optional[int] = 1000,
                  max_queue_size: Optional[int] = 100,
                  override=True,

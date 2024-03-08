@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "agentops"
-version = "0.0.20"
+version = "0.0.23" #TODO
 authors = [
   { name="Alex Reibman", email="areibman@gmail.com" },
   { name="Shawn Qiu", email="siyangqiu@gmail.com" }
@@ -21,7 +21,10 @@ dependencies = [
     "requests==2.31.0",
     "pydantic>=1.9.0",
     "packaging>=23.1,<24.0",
-    "toml>=0.10.2"
+    "toml>=0.10.2",
+    "opentelemetry-api>=1.10.0",
+    "opentelemetry-sdk>=1.10.0",
+    "opentelemetry-instrumentation-requests>=0.33b0"
 ]
 [project.optional-dependencies]
 dev = [
