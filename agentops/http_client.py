@@ -4,6 +4,10 @@ import logging
 import requests
 from requests.adapters import Retry, HTTPAdapter
 
+from opentelemetry import trace
+
+tracer = trace.get_tracer(__name__)
+
 JSON_HEADER = {
     "Content-Type": "application/json; charset=UTF-8",
     "Accept": "*/*"
@@ -63,6 +67,7 @@ class HttpClient:
     @staticmethod
     def post(url: str, payload: bytes, api_key: Optional[str] = None, header=None) -> Response:
         result = Response()
+
         try:
             # Create request session with retries configured
             request_session = requests.Session()
@@ -71,8 +76,9 @@ class HttpClient:
             if api_key != None:
                 JSON_HEADER["X-Agentops-Auth"] = api_key
 
-            res = request_session.post(url, data=payload,
-                                       headers=JSON_HEADER, timeout=20)
+            with tracer.start_as_current_span("howard-test", attributes={"http.request.body": str(payload)}) as span:
+                res = request_session.post(url, data=payload,
+                                           headers=JSON_HEADER, timeout=20)
 
             result.parse(res)
         except requests.exceptions.Timeout:
