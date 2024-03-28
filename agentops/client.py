@@ -55,11 +55,6 @@ class Client(metaclass=MetaClient):
                  override=True,
                  auto_start_session=True
                  ):
-
-        self._session = None
-        self._worker = None
-        self._tags = tags
-
         try:
             self.config = Configuration(api_key,
                                         parent_key,
@@ -68,6 +63,12 @@ class Client(metaclass=MetaClient):
                                         max_queue_size)
         except ConfigurationError:
             return
+
+        # TODO: if no config we will get errors because these never exist but then start/end_session expect them to
+
+        self._session = None
+        self._worker = None
+        self._tags = tags
 
         self._handle_unclean_exits()
 
