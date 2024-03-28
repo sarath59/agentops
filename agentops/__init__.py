@@ -29,8 +29,8 @@ def end_session(end_state: str,
     Client().end_session(end_state, end_state_reason, video)
 
 
-def start_session(tags: Optional[List[str]] = None, config: Optional[Configuration] = None):
-    Client().start_session(tags, config)
+def start_session(tags: Optional[List[str]] = None):
+    Client().start_session(tags)
 
 
 def record(event: Event):

@@ -72,7 +72,7 @@ class Client(metaclass=MetaClient):
         self._handle_unclean_exits()
 
         if auto_start_session:
-            self.start_session(tags, self.config)
+            self.start_session(tags)
 
         if override:
             if 'openai' in sys.modules:
@@ -190,7 +190,7 @@ class Client(metaclass=MetaClient):
 
         return returns
 
-    def start_session(self, tags: Optional[List[str]] = None, config: Optional[Configuration] = None):
+    def start_session(self, tags: Optional[List[str]] = None):
         """
         Start a new session for recording events.
 
@@ -202,11 +202,11 @@ class Client(metaclass=MetaClient):
         if self._session is not None:
             return logging.warning("AgentOps: Cannot start session - session already started")
 
-        if not config and not self.config:
+        if not self.config:
             return logging.warning("AgentOps: Cannot start session - missing configuration")
 
         self._session = Session(uuid4(), tags or self._tags, host_env=get_host_env())
-        self._worker = Worker(config or self.config)
+        self._worker = Worker(self.config)
         self._worker.start_session(self._session)
         logging.info('View info on this session at https://agentops.ai/dashboard?session_id={}'
                      .format(self._session.session_id))
