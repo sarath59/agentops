@@ -1,3 +1,4 @@
+from dataclasses import asdict, is_dataclass
 from pprint import pprint, pformat
 from functools import wraps
 import time
@@ -53,6 +54,7 @@ def filter_unjsonable(d: dict) -> dict:
 
 
 def safe_serialize(obj):
+
     def default(o):
         if isinstance(o, UUID):
             return str(o)
@@ -65,16 +67,35 @@ def safe_serialize(obj):
         else:
             return f"<<non-serializable: {type(o).__qualname__}>>"
 
-    def remove_none_values(value):
+    def remove_none_values(obj):
         """Recursively remove keys with None values from dictionaries."""
-        if isinstance(value, dict):
-            return {k: remove_none_values(v) for k, v in value.items() if v is not None}
-        elif isinstance(value, list):
-            return [remove_none_values(item) for item in value]
+        if isinstance(obj, dict):
+            return {k: remove_none_values(v) for k, v in obj.items() if v is not None}
+        elif isinstance(obj, list):
+            return [remove_none_values(item) for item in obj]
         else:
-            return value
+            return obj
 
-    cleaned_obj = remove_none_values(obj)
+    def remove_nonserialized_values(obj):
+        """
+        Recursively remove fields marked with serialize=False in the metadata from dataclass instances.
+        """
+        if isinstance(obj, dict):
+            return {k: remove_nonserialized_values(v) for k, v in obj.items() if v is not None and (not isinstance(v, dict) or 'serialize' not in v or v['serialize'])}
+        elif isinstance(obj, list):
+            return [remove_nonserialized_values(item) for item in obj]
+        elif is_dataclass(obj):
+            # Process dataclass instances by converting to dict and applying the same logic
+            data = asdict(obj)
+            return {k: remove_nonserialized_values(v) for k, v in data.items() if 'serialize' not in obj.__dataclass_fields__[k].metadata or obj.__dataclass_fields__[k].metadata.get('serialize', True)}
+        else:
+            return obj
+
+    def serialize_only_desired_values(obj):
+        remove_none_values(obj)
+        remove_nonserialized_values(obj)
+
+    cleaned_obj = serialize_only_desired_values(obj)
     return json.dumps(cleaned_obj, default=default)
 
 

@@ -113,7 +113,7 @@ class Client(metaclass=MetaClient):
         """
 
         if self._session is not None and not self._session.has_ended:
-            self._worker.add_event(event.__dict__)
+            self._worker.add_event(event)
         else:
             logging.warning(
                 "🖇 AgentOps: Cannot record event - no current session")

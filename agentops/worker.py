@@ -5,13 +5,13 @@ from .http_client import HttpClient
 from .config import Configuration, ConfigurationError
 from .session import Session
 from .helpers import safe_serialize, filter_unjsonable
-from typing import Dict
+from .event import Event, ErrorEvent
 
 
 class Worker:
     def __init__(self, config: Configuration) -> None:
         self.config = config
-        self.queue: list[Dict] = []
+        self.queue: list[Event | ErrorEvent] = []  # TODO
         self.lock = threading.Lock()
         self.stop_flag = threading.Event()
         self.thread = threading.Thread(target=self.run)
@@ -19,7 +19,7 @@ class Worker:
         self.thread.start()
         self._session: Session | None = None
 
-    def add_event(self, event: dict) -> None:
+    def add_event(self, event: Event | ErrorEvent) -> None:
         with self.lock:
             self.queue.append(event)
             if len(self.queue) >= self.config.max_queue_size:
@@ -71,10 +71,10 @@ class Worker:
             }
 
             res = HttpClient.post(f'{self.config.endpoint}/sessions',
-                            json.dumps(filter_unjsonable(
-                                payload)).encode("utf-8"),
-                            self.config.api_key,
-                            self.config.parent_key)
+                                  json.dumps(filter_unjsonable(
+                                      payload)).encode("utf-8"),
+                                  self.config.api_key,
+                                  self.config.parent_key)
 
             return res.body.get('token_cost', "unknown")
 

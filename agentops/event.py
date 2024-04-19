@@ -124,8 +124,8 @@ class ErrorEvent():
 
     """
 
-    trigger_event: Optional[Event] = None  # TODO: remove from serialization?
-    exception: Optional[Exception] = None
+    trigger_event: Optional[Event] = field(default=None, metadata={'serialize': False})
+    exception: Optional[Exception] = field(default=None, metadata={'serialize': False})
     error_type: Optional[str] = None
     code: Optional[str] = None
     details: Optional[str] = None
