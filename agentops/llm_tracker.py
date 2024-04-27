@@ -7,6 +7,7 @@ from .log_config import logger
 from .event import LLMEvent, ErrorEvent
 from .helpers import get_ISO_time, check_call_stack_for_agent_id
 import inspect
+from vlite2 import VLite2
 
 
 class LlmTracker:
@@ -199,12 +200,73 @@ class LlmTracker:
 
     def override_openai_v1_completion(self):
         from openai.resources.chat import completions
+        from openai.types.chat import ChatCompletion
+        import json
 
         # Store the original method
         original_create = completions.Completions.create
 
         def patched_function(*args, **kwargs):
             init_timestamp = get_ISO_time()
+
+            # Time Travel Debugging
+            vlite = VLite2(vdb_name="test")
+            threshold = 0.8
+
+            messages = kwargs["messages"]
+
+            # for message in messages:
+            #     if not isinstance(message, dict):
+            #         raise ValueError("Each message must be a dictionary.")
+            #     if 'role' not in message or 'content' not in message:
+            #         raise ValueError("Each message must contain 'role' and 'content' keys.")
+            #     if message['role'].lower() not in ['system', 'user', 'assistant', 'tool', 'function']:
+            #         raise ValueError("The 'role' key must be either 'system', 'assistant', or 'user'.")
+            # if messages[0]['role'] not in ['system', 'user']:
+            #     raise ValueError("The first role must be either 'user' or 'system'.")
+
+            cache_query = messages[-1]['content']
+
+            results = vlite.retrieve(text=cache_query, top_k=1, autocut=False,
+                                     get_metadata=True, get_similarities=True)
+            metadata = results['metadata']
+            sims = results['scores']
+            if metadata and sims:
+                if sims[0] > threshold:
+                    result_json_string = metadata[0]['cached_response']
+                    result_model = ChatCompletion.model_validate_json(result_json_string)
+                    return self._handle_response_v1_openai(result_model, kwargs, init_timestamp)
+
+            # response = self.__llm(provider=provider, model=model, messages=messages)
+
+            # result_json = {
+            #     "id": "chatcmpl-9IRQCMY68Bv9fxKyDrUFfyNZBujFM",
+            #     "choices": [
+            #         {
+            #             "finish_reason": "stop",
+            #             "index": 0,
+            #             "logprobs": [],
+            #             "message": {
+            #                 "content": "A robot is a mechanical or virtual artificial agent, usually guided by a computer program or electronic circuitry, that can perform tasks automatically. Robots can be designed to accomplish a wide range of functions, from simple repetitive tasks to more complex activities that require decision-making and problem-solving capabilities. Robots are used in various industries, such as manufacturing, healthcare, transportation, and entertainment, as well as in research and exploration.",
+            #                 "role": "assistant"
+            #             }
+            #         }
+            #     ],
+            #     "created": 1714182340,
+            #     "model": "gpt-3.5-turbo-0125",
+            #     "object": "chat.completion",
+            #     "system_fingerprint": "fp_3b956da36b",
+            #     "usage": {
+            #         "completion_tokens": 82,
+            #         "prompt_tokens": 18,
+            #         "total_tokens": 100
+            #     }
+            # }
+
+            # result_json_string = json.dumps(result_json)
+            # result_model = ChatCompletion.model_validate_json(result_json_string)
+            # print(result_model)
+
             # Call the original function with its original arguments
             result = original_create(*args, **kwargs)
             return self._handle_response_v1_openai(result, kwargs, init_timestamp)
@@ -266,7 +328,33 @@ class LlmTracker:
                 @functools.wraps(original_method)
                 async def async_method(*args, **kwargs):
                     init_timestamp = get_ISO_time()
-                    response = await original_method(*args, **kwargs)
+
+                    # Time Travel Debugging
+                    result_json = {
+                        "id": "14eea46c-17ce-4910-9c89-45d203c934e9",
+                        "choices": [
+                            {
+                                "finish_reason": "stop",
+                                "index": 0,
+                                "message": {
+                                    "content": "This is a test of time travel debugging",
+                                    "role": "assistant"
+                                }
+                            }
+                        ],
+                        "created": 1714095336,
+                        "model": "gpt-3.5-turbo-0125",
+                        "object": "chat.completion",
+                        "usage": {
+                            "completion_tokens": 1,
+                            "prompt_tokens": 2,
+                            "total_tokens": 3
+                        }
+                    }
+
+                    response = result_json
+
+                    # response = await original_method(*args, **kwargs)
                     return handle_response(response, kwargs, init_timestamp)
                 return async_method
 

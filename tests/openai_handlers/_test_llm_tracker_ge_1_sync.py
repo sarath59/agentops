@@ -66,6 +66,6 @@ def call_openai_v1_sync_streaming():
 
 
 call_openai_v1_sync_no_streaming()
-call_openai_v1_sync_streaming()
+# call_openai_v1_sync_streaming()
 
 agentops.end_session('Success')
