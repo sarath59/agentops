@@ -215,16 +215,6 @@ class LlmTracker:
 
             messages = kwargs["messages"]
 
-            # for message in messages:
-            #     if not isinstance(message, dict):
-            #         raise ValueError("Each message must be a dictionary.")
-            #     if 'role' not in message or 'content' not in message:
-            #         raise ValueError("Each message must contain 'role' and 'content' keys.")
-            #     if message['role'].lower() not in ['system', 'user', 'assistant', 'tool', 'function']:
-            #         raise ValueError("The 'role' key must be either 'system', 'assistant', or 'user'.")
-            # if messages[0]['role'] not in ['system', 'user']:
-            #     raise ValueError("The first role must be either 'user' or 'system'.")
-
             cache_query = messages[-1]['content']
 
             results = vlite.retrieve(text=cache_query, top_k=1, autocut=False,
@@ -236,36 +226,6 @@ class LlmTracker:
                     result_json_string = metadata[0]['cached_response']
                     result_model = ChatCompletion.model_validate_json(result_json_string)
                     return self._handle_response_v1_openai(result_model, kwargs, init_timestamp)
-
-            # response = self.__llm(provider=provider, model=model, messages=messages)
-
-            # result_json = {
-            #     "id": "chatcmpl-9IRQCMY68Bv9fxKyDrUFfyNZBujFM",
-            #     "choices": [
-            #         {
-            #             "finish_reason": "stop",
-            #             "index": 0,
-            #             "logprobs": [],
-            #             "message": {
-            #                 "content": "A robot is a mechanical or virtual artificial agent, usually guided by a computer program or electronic circuitry, that can perform tasks automatically. Robots can be designed to accomplish a wide range of functions, from simple repetitive tasks to more complex activities that require decision-making and problem-solving capabilities. Robots are used in various industries, such as manufacturing, healthcare, transportation, and entertainment, as well as in research and exploration.",
-            #                 "role": "assistant"
-            #             }
-            #         }
-            #     ],
-            #     "created": 1714182340,
-            #     "model": "gpt-3.5-turbo-0125",
-            #     "object": "chat.completion",
-            #     "system_fingerprint": "fp_3b956da36b",
-            #     "usage": {
-            #         "completion_tokens": 82,
-            #         "prompt_tokens": 18,
-            #         "total_tokens": 100
-            #     }
-            # }
-
-            # result_json_string = json.dumps(result_json)
-            # result_model = ChatCompletion.model_validate_json(result_json_string)
-            # print(result_model)
 
             # Call the original function with its original arguments
             result = original_create(*args, **kwargs)

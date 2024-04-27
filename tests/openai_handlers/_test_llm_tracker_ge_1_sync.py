@@ -31,12 +31,12 @@ def call_openai_v1_sync_no_streaming():
             },
             {
                 "role": "user",
-                "content": "write me a haiku about devops"
+                "content": "write me a haiku about devops yo"
             }
         ]
     )
 
-    print(chat_completion)
+    print(chat_completion.choices[0].message.model_dump()["content"])
     # raise ValueError("This is an intentional error for testing.")
 
 
