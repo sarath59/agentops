@@ -215,7 +215,7 @@ class LlmTracker:
 
             messages = kwargs["messages"]
 
-            cache_query = messages[-1]['content']
+            cache_query = messages[-1]['content']  # TODO: loop over all the messages to build cache_query
 
             results = vlite.retrieve(text=cache_query, top_k=1, autocut=False,
                                      get_metadata=True, get_similarities=True)
