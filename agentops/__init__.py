@@ -10,6 +10,13 @@ from .decorators import record_function
 from .agent import track_agent
 from .log_config import set_logging_level_info, set_logging_level_critial
 
+import sys
+from importlib import import_module
+from importlib.metadata import version
+from packaging.version import Version, parse
+import logger
+from .llm_tracker import override_openai_v1_completion, override_litellm_async_completion, override_openai_v1_async_completion, _override_method
+
 
 def init(api_key: Optional[str] = None,
          parent_key: Optional[str] = None,
@@ -128,3 +135,46 @@ def set_parent_key(parent_key):
             parent_key (str): The API key of the parent organization to set.
     """
     Client().set_parent_key(parent_key)
+
+
+def override_api(self):
+    """
+    Overrides key methods of the specified API to record events.
+    """
+    SUPPORTED_APIS = {
+        'litellm': {'1.3.1': ("openai_chat_completions.completion",)},
+        'openai': {
+            '1.0.0': (
+                "chat.completions.create",
+            ),
+            '0.0.0':
+            (
+                "ChatCompletion.create",
+                "ChatCompletion.acreate",
+            ),
+        }
+    }
+
+    for api in SUPPORTED_APIS:
+        if api in sys.modules:
+            module = import_module(api)
+            if api == 'litellm':
+                module_version = version(api)
+                if Version(module_version) >= parse('1.3.1'):
+                    override_litellm_completion()
+                    override_litellm_async_completion()
+                else:
+                    logger.warning(f'🖇 AgentOps: Only litellm>=1.3.1 supported. v{module_version} found.')
+                return  # If using an abstraction like litellm, do not patch the underlying LLM APIs
+
+            if api == 'openai':
+                # Patch openai v1.0.0+ methods
+                if hasattr(module, '__version__'):
+                    module_version = parse(module.__version__)
+                    if module_version >= parse('1.0.0'):
+                        llm_tracker.override_openai_v1_completion()
+                        llm_tracker.override_openai_v1_async_completion()
+                    else:
+                        # Patch openai <v1.0.0 methods
+                        for method_path in SUPPORTED_APIS['openai']['0.0.0']:
+                            llm_tracker._override_method(api, method_path, module)

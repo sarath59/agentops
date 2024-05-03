@@ -77,7 +77,8 @@ class Client(metaclass=MetaClient):
         self._worker = None
         self._tags_for_future_session = None
 
-        self._env_data_opt_out = os.getenv('AGENTOPS_ENV_DATA_OPT_OUT') and os.getenv('AGENTOPS_ENV_DATA_OPT_OUT').lower() == 'true'
+        self._env_data_opt_out = os.getenv('AGENTOPS_ENV_DATA_OPT_OUT') and os.getenv(
+            'AGENTOPS_ENV_DATA_OPT_OUT').lower() == 'true'
 
         try:
             self.config = Configuration(api_key=api_key,
@@ -97,7 +98,6 @@ class Client(metaclass=MetaClient):
 
         if instrument_llm_calls:
             self.llm_tracker = LlmTracker(self)
-            self.llm_tracker.override_api()
 
     def add_tags(self, tags: List[str]):
         """
@@ -240,7 +240,8 @@ class Client(metaclass=MetaClient):
         if not config and not self.config:
             return logger.warning("🖇 AgentOps: Cannot start session - missing configuration")
 
-        self._session = Session(inherited_session_id or uuid4(), tags or self._tags_for_future_session, host_env=get_host_env(self._env_data_opt_out))
+        self._session = Session(inherited_session_id or uuid4(),
+                                tags or self._tags_for_future_session, host_env=get_host_env(self._env_data_opt_out))
         self._worker = Worker(config or self.config)
         start_session_result = self._worker.start_session(self._session)
         if not start_session_result:
