@@ -4,11 +4,8 @@ from typing import Optional, List
 
 from .client import Client
 from .config import Configuration
-from .event import Event, ActionEvent, LLMEvent, ToolEvent, ErrorEvent
-from .enums import Models
-from .decorators import record_function
-from .agent import track_agent
-from .log_config import set_logging_level_info, set_logging_level_critial
+from .event import Event, ErrorEvent
+from .log_config import set_logging_level_info
 
 import sys
 from importlib import import_module
@@ -172,9 +169,9 @@ def override_api(self):
                 if hasattr(module, '__version__'):
                     module_version = parse(module.__version__)
                     if module_version >= parse('1.0.0'):
-                        llm_tracker.override_openai_v1_completion()
-                        llm_tracker.override_openai_v1_async_completion()
+                        override_openai_v1_completion()
+                        override_openai_v1_async_completion()
                     else:
                         # Patch openai <v1.0.0 methods
                         for method_path in SUPPORTED_APIS['openai']['0.0.0']:
-                            llm_tracker._override_method(api, method_path, module)
+                            _override_method(api, method_path, module)
