@@ -26,12 +26,6 @@ def get_model_from_kwargs(kwargs: any) -> str:
         return 'unknown_model'
 
 
-# def get_completion_from_response(response: LLMResult):
-#     if 'text' in response.generations[0][0]:
-#         return response.generations[0][0].text
-#     if ''
-#
-
 class Events:
     llm: Dict[str, LLMEvent] = {}
     tool: Dict[str, ToolEvent] = {}
