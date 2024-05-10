@@ -8,10 +8,11 @@ from .event import LLMEvent, ErrorEvent
 from .helpers import get_ISO_time, check_call_stack_for_agent_id
 import inspect
 from typing import Optional
-import pprint
+from rich.pretty import pprint
 
 original_create = None
 original_create_async = None
+
 
 class LlmTracker:
     SUPPORTED_APIS = {
@@ -218,13 +219,15 @@ class LlmTracker:
             self.client.record(self.llm_event)
         except Exception as e:
             self.client.record(ErrorEvent(trigger_event=self.llm_event, exception=e))
-            kwargs_str = pprint.pformat(kwargs)
-            response = pprint.pformat(response)
-            logger.warning(
-                f"🖇 AgentOps: Unable to parse response for LLM call. Skipping upload to AgentOps\n"
-                f"response:\n {response}\n"
-                f"kwargs:\n {kwargs_str}\n"
-            )
+
+            # TODO: Fix pprint. Needs to be in logger.warning
+            # https://rich.readthedocs.io/en/latest/logging.html
+            # https://rich.readthedocs.io/en/latest/pretty.html#pretty-renderable
+            logger.warning("🖇 AgentOps: Unable to parse response for LLM call. Skipping upload to AgentOps\n")
+            logger.warning("response:\n")
+            pprint(response)
+            logger.warning("kwargs:\n")
+            pprint(kwargs)
 
         return response
 
