@@ -1,10 +1,10 @@
 from __future__ import annotations
 
-import logging
 import threading
 import uuid
 from typing import TYPE_CHECKING, Any, Dict, List, Tuple, Union, TypeVar, Callable
 
+from ..log_config import logging
 import agentops
 from openai import AzureOpenAI, OpenAI
 from openai.types.chat import ChatCompletion
