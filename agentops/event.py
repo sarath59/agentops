@@ -6,7 +6,7 @@ Data Class:
 """
 
 from dataclasses import asdict, dataclass, field
-from typing import List, Optional
+from typing import Any, Dict, List, Optional, Sequence, Union
 from .helpers import get_ISO_time, check_call_stack_for_agent_id
 from .enums import EventType, Models
 from uuid import UUID, uuid4
@@ -15,7 +15,6 @@ import traceback
 
 @dataclass
 class Event:
-
     """
     Abstract base class for events that will be recorded. Should not be instantiated directly.
 
@@ -37,14 +36,13 @@ class Event:
     }
     """
 
-    event_type: str  # EventType.ENUM.value
+    event_type: EventType
     params: Optional[dict] = None
-    returns: Optional[str] = None
-    init_timestamp: Optional[str] = field(default_factory=get_ISO_time)
-    end_timestamp: str = field(default_factory=get_ISO_time)
+    returns: Optional[Union[str, List[str]]] = None
+    init_timestamp: str = field(default_factory=get_ISO_time)
+    end_timestamp: Optional[str] = None
     agent_id: Optional[UUID] = field(default_factory=check_call_stack_for_agent_id)
     id: UUID = field(default_factory=uuid4)
-    # TODO: has_been_recorded: bool = False
 
 
 @dataclass
@@ -60,18 +58,12 @@ class ActionEvent(Event):
     event_type: str = EventType.ACTION.value
     # TODO: Should not be optional, but non-default argument 'agent_id' follows default argument error
     action_type: Optional[str] = None
-    logs: Optional[str] = None
+    logs: Optional[Union[str, Sequence[Any]]] = None
     screenshot: Optional[str] = None
-
-    # May be needed if we keep Optional for agent_id
-    # def __post_init__(self):
-    #     if self.agent_id is None:
-    #         raise ValueError("agent_id is required for ActionEvent")
 
 
 @dataclass
 class LLMEvent(Event):
-
     """
     For recording calls to LLMs. AgentOps auto-instruments calls to the most popular LLMs e.g. GPT, Claude, Gemini, etc.
 
@@ -86,11 +78,11 @@ class LLMEvent(Event):
 
     event_type: str = EventType.LLM.value
     thread_id: Optional[UUID] = None
-    prompt: str | List = None
+    prompt: Optional[Union[str, List]] = None
     prompt_tokens: Optional[int] = None
-    completion: str | object = None
+    completion: Union[str, object] = None
     completion_tokens: Optional[int] = None
-    model: Optional[Models | str] = None
+    model: Optional[Union[Models, str]] = None
 
 
 @dataclass
@@ -102,16 +94,17 @@ class ToolEvent(Event):
     logs(str, dict, optional): For detailed information/logging related to the tool.
 
     """
+
     event_type: str = EventType.TOOL.value
     name: Optional[str] = None
-    logs: Optional[str | dict] = None
+    logs: Optional[Union[str, dict]] = None
+
 
 # Does not inherit from Event because error will (optionally) be linked to an ActionEvent, LLMEvent, etc that will have the details
 
 
 @dataclass
-class ErrorEvent():
-
+class ErrorEvent:
     """
     For recording any errors e.g. ones related to agent execution
 
@@ -129,16 +122,12 @@ class ErrorEvent():
     exception: Optional[BaseException] = None
     error_type: Optional[str] = None
     code: Optional[str] = None
-    details: Optional[str] = None
+    details: Optional[Union[str, Dict[str, str]]] = None
     logs: Optional[str] = field(default_factory=traceback.format_exc)
     timestamp: str = field(default_factory=get_ISO_time)
 
     def __post_init__(self):
         self.event_type = EventType.ERROR.value
-        if self.trigger_event:
-            self.trigger_event_id = self.trigger_event.id
-            self.trigger_event_type = self.trigger_event.event_type
-            self.trigger_event = None  # removes trigger_event from serialization
         if self.exception:
             self.error_type = self.error_type or type(self.exception).__name__
             self.details = self.details or str(self.exception)

@@ -15,39 +15,45 @@ class Configuration:
     Stores the configuration settings for AgentOps clients.
 
     Args:
-        api_key (str, optional): API Key for AgentOps services. If none is provided, key will 
+        api_key (str, optional): API Key for AgentOps services. If none is provided, key will
             be read from the AGENTOPS_API_KEY environment variable.
-        parent_key (str, optional): Organization key to give visibility of all user sessions the user's organization. If none is provided, key will 
+        parent_key (str, optional): Organization key to give visibility of all user sessions the user's organization. If none is provided, key will
             be read from the AGENTOPS_PARENT_KEY environment variable.
-        endpoint (str, optional): The endpoint for the AgentOps service. If none is provided, key will 
+        endpoint (str, optional): The endpoint for the AgentOps service. If none is provided, key will
             be read from the AGENTOPS_API_ENDPOINT environment variable. Defaults to 'https://api.agentops.ai'.
-        max_wait_time (int, optional): The maximum time to wait in milliseconds before flushing the queue. Defaults to 30000.
+        max_wait_time (int, optional): The maximum time to wait in milliseconds before flushing the queue. Defaults to 5000.
         max_queue_size (int, optional): The maximum size of the event queue. Defaults to 100.
     """
 
-    def __init__(self,
-                 api_key: Optional[str] = None,
-                 parent_key: Optional[str] = None,
-                 endpoint: Optional[str] = None,
-                 max_wait_time: Optional[int] = None,
-                 max_queue_size: Optional[int] = None):
+    def __init__(
+        self,
+        api_key: Optional[str] = None,
+        parent_key: Optional[str] = None,
+        endpoint: Optional[str] = None,
+        max_wait_time: Optional[int] = None,
+        max_queue_size: Optional[int] = None,
+        skip_auto_end_session: Optional[bool] = False,
+    ):
 
         if not api_key:
-            api_key = environ.get('AGENTOPS_API_KEY', None)
+            api_key = environ.get("AGENTOPS_API_KEY", None)
             if not api_key:
-                raise ConfigurationError("🖇 AgentOps: No API key provided - no data will be recorded.")
+                raise ConfigurationError(
+                    "No API key provided - no data will be recorded."
+                )
 
         if not parent_key:
-            parent_key = environ.get('AGENTOPS_PARENT_KEY', None)
+            parent_key = environ.get("AGENTOPS_PARENT_KEY", None)
 
         if not endpoint:
-            endpoint = environ.get('AGENTOPS_API_ENDPOINT', 'https://api.agentops.ai')
+            endpoint = environ.get("AGENTOPS_API_ENDPOINT", "https://api.agentops.ai")
 
         self._api_key: str = api_key
         self._endpoint = endpoint
-        self._max_wait_time = max_wait_time or 30000
+        self._max_wait_time = max_wait_time or 5000
         self._max_queue_size = max_queue_size or 100
         self._parent_key: Optional[str] = parent_key
+        self._skip_auto_end_session: Optional[bool] = skip_auto_end_session
 
     @property
     def api_key(self) -> str:
@@ -77,7 +83,7 @@ class Configuration:
         Returns:
             str: The endpoint for the AgentOps service.
         """
-        return self._endpoint
+        return self._endpoint  # type: ignore
 
     @endpoint.setter
     def endpoint(self, value: str):
@@ -132,6 +138,10 @@ class Configuration:
     @property
     def parent_key(self):
         return self._parent_key
+
+    @property
+    def skip_auto_end_session(self):
+        return self._skip_auto_end_session
 
     @parent_key.setter
     def parent_key(self, value: str):

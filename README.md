@@ -1,5 +1,7 @@
 <div align="center">
-  <img src="logo.png" style="margin: 15px; max-width: 300px" width="50%" alt="Logo">
+  <a href="https://agentops.ai?ref=gh">
+    <img src="https://raw.githubusercontent.com/AgentOps-AI/agentops/35d5682866921a9e28d8ef66ae3c3b3d92d8fa6b/img/logo.png" style="margin: 15px; max-width: 300px" width="50%" alt="Logo">
+  </a>
 </div>
 <p align="center">
   <em>AI agents suck. We’re fixing that.</em>
@@ -16,36 +18,49 @@
 <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
 <a href="https://discord.gg/JHPt4C7r">📢 Discord</a>
 <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
-<a href="https://app.agentops.ai/?=gh">🖇️ AgentOps</a>
+<a href="https://app.agentops.ai/?ref=gh">🖇️ AgentOps</a>
 <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
 <a href="https://docs.agentops.ai/introduction">📙 Documentation</a>
 </p>
 
-# AgentOps
+# AgentOps 🖇️
 
-Build your next agent with benchmarks, observability, and replay analytics. AgentOps is the toolkit for evaluating and developing robust and reliable AI agents.
-
-You can sign up for AgentOps [here](https://app.agentops.ai).
-
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) ![PyPI - Version](https://img.shields.io/pypi/v/agentops) <a href="https://pepy.tech/project/agentops">
-  <img src="https://static.pepy.tech/badge/agentops/month"> <a href="https://twitter.com/agentopsai">
-    <img src="https://img.shields.io/badge/follow-%40agentops-1DA1F2?logo=twitter&style=social" alt="AgentOps Twitter" /> 
-  </a>
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+![PyPI - Version](https://img.shields.io/pypi/v/agentops)
+<a href="https://pepy.tech/project/agentops">
+  <img src="https://static.pepy.tech/badge/agentops/month">
+</a>
+<a href="https://twitter.com/agentopsai">
+  <img src="https://img.shields.io/badge/follow-%40agentops-1DA1F2?logo=twitter&style=social" alt="AgentOps Twitter"/>
+</a>
 <a href="https://discord.gg/mKW3ZhN9p2">
-    <img src="https://img.shields.io/badge/chat-on%20Discord-blueviolet" alt="Discord community channel" />
-  </a>
-  <a href="mailto:investor@agentops.ai"><img src="https://img.shields.io/website?color=%23f26522&down_message=Y%20Combinator&label=Not%20Backed%20By&logo=ycombinator&style=flat-square&up_message=Y%20Combinator&url=https%3A%2F%2Fwww.ycombinator.com"></a>
+  <img src="https://img.shields.io/badge/chat-on%20Discord-blueviolet" alt="Discord community channel"/>
+</a>
 <a href="https://github.com/agentops-ai/agentops/issues">
-    <img src="https://img.shields.io/github/commit-activity/m/agentops-ai/agentops" alt="git commit activity" />
-  </a>
+  <img src="https://img.shields.io/github/commit-activity/m/agentops-ai/agentops" alt="git commit activity"/>
+</a>
+
+AgentOps helps developers build, evaluate, and monitor AI agents. Tools to build agents from prototype to production.
+
+|                                       |                                                               |
+| ------------------------------------- | ------------------------------------------------------------- |
+| 📊 **Replay Analytics and Debugging** | Step-by-step agent execution graphs                           |
+| 💸 **LLM Cost Management**            | Track spend with LLM foundation model providers               |
+| 🧪 **Agent Benchmarking**             | Test your agents against 1,000+ evals                         |
+| 🔐 **Compliance and Security**        | Detect common prompt injection and data exfiltration exploits |
+| 🤝 **Framework Integrations**         | Easily plugs in with frameworks like CrewAI and LangChain     |
+
 ## Quick Start ⌨️
 
-```pip install agentops```
+```bash
+pip install agentops
+```
 
 ### Session replays in 3 lines of code
-Initialize the AgentOps client, and automatically get analytics on every LLM call.
 
-```python python
+Initialize the AgentOps client and automatically get analytics on every LLM call.
+
+```python
 import agentops
 
 # Beginning of program's code (i.e. main.py, __init__.py)
@@ -62,38 +77,51 @@ agentops.end_session('Success')
 # Woohoo You're done 🎉
 ```
 
-Refer to our [API documentation](http://docs.agentops.ai) for detailed instructions.
+All your sessions are available on the [AgentOps dashboard](https://app.agentops.ai?ref=gh). Refer to our [API documentation](http://docs.agentops.ai) for detailed instructions.
 
-## Time travel debugging 🔮
-(coming soon!)
+<details open>
+  <summary>Agent Dashboard</summary>
+  <a href="https://app.agentops.ai?ref=gh">
+   <img src="https://github.com/AgentOps-AI/agentops/assets/14807319/158e082a-9a7d-49b7-9b41-51a49a1f7d3d" style="width: 90%;" alt="Agent Dashboard"/>
+  </a>
+</details>
 
-## Agent Arena 🥊
-(coming soon!)
+<details>
+  <summary>Session Analytics</summary>
+  <a href="https://app.agentops.ai?ref=gh">
+    <img src="https://github.com/AgentOps-AI/agentops/assets/14807319/d7228019-1488-40d3-852f-a61e998658ad" style="width: 90%;" alt="Session Analytics"/>
+  </a>
+</details>
 
-## Evaluations Roadmap 🧭
+<details>
+  <summary>Session Replays</summary>
+  <a href="https://app.agentops.ai?ref=gh">
+    <img src="https://github.com/AgentOps-AI/agentops/assets/14807319/561d59f3-c441-4066-914b-f6cfe32a598c" style="width: 90%;" alt="Session Replays"/>
+  </a>
+</details>
 
-| Platform | Dashboard | Evals |
-|---|---|---|
-|✅ Python SDK | ✅ Multi-session and Cross-session metrics | ✅ Custom eval metrics |
-|🚧 Evaluation builder API | ✅ Custom event tag tracking | 🔜 Agent scorecards |
-|✅ [Javascript/Typescript SDK](https://github.com/AgentOps-AI/agentops-node) | ✅ Session replays| 🔜 Evaluation playground + leaderboard|
+## Integrations 🦾
 
+### CrewAI 🛶
 
-## Debugging Roadmap 🧭
+Build Crew agents with observability with only 2 lines of code. Simply set an `AGENTOPS_API_KEY` in your environment, and your crews will get automatic monitoring on the AgentOps dashboard.
 
-| Performance testing | Environments | LLM Testing | Reasoning and execution testing |
-|---|---|---|---|
-|✅ Event latency analysis | 🔜 Non-stationary environment testing | 🔜 LLM non-deterministic function detection | 🚧 Infinite loops and recursive thought detection |
-|✅ Agent workflow execution pricing | 🔜 Multi-modal environments | 🚧 Token limit overflow flags | 🔜 Faulty reasoning detection |
-|🚧 Success validators (external) | 🔜 Execution containers | 🔜 Context limit overflow flags | 🔜 Generative code validators |
-|🔜 Agent controllers/skill tests | ✅ Honeypot and prompt injection detection ([PromptArmor](https://promptarmor.com)) | 🔜 API bill tracking | 🔜 Error breakpoint analysis |
-|🔜 Information context constraint testing | 🔜 Anti-agent roadblocks (i.e. Captchas) | 🔜 CI/CD integration checks | |
-|🔜 Regression testing | 🔜 Multi-agent framework visualization | | |
+AgentOps is integrated with CrewAI on a pre-release fork. Install crew with
 
-## Callback handlers ↩️
+```bash
+pip install git+https://github.com/AgentOps-AI/crewAI.git@main
+```
 
-### Langchain
+- [AgentOps integration example](https://docs.agentops.ai/v1/integrations/crewai)
+- [Official CrewAI documentation](https://docs.crewai.com/how-to/AgentOps-Observability)
+
+### Langchain 🦜🔗
+
 AgentOps works seamlessly with applications built using Langchain. To use the handler, install Langchain as an optional dependency:
+
+<details>
+  <summary>Installation</summary>
+  
 ```shell
 pip install agentops[langchain]
 ```
@@ -123,14 +151,96 @@ agent = initialize_agent(tools,
 
 Check out the [Langchain Examples Notebook](./examples/langchain_examples.ipynb) for more details including Async handlers.
 
-### LlamaIndex 
+</details>
+
+### Cohere ⌨️
+
+First class support for Cohere(>=5.4.0). This is a living integration, should you need any added functionality please message us on Discord!
+
+- [AgentOps integration example](https://docs.agentops.ai/v1/integrations/cohere)
+- [Official Cohere documentation](https://docs.cohere.com/reference/about)
+
+<details>
+  <summary>Installation</summary>
+  
+```bash
+pip install cohere
+```
+
+```python python
+import cohere
+import agentops
+
+# Beginning of program's code (i.e. main.py, __init__.py)
+agentops.init(<INSERT YOUR API KEY HERE>)
+co = cohere.Client()
+
+chat = co.chat(
+    message="Is it pronounced ceaux-hear or co-hehray?"
+)
+
+print(chat)
+
+agentops.end_session('Success')
+```
+
+```python python
+import cohere
+import agentops
+
+# Beginning of program's code (i.e. main.py, __init__.py)
+agentops.init(<INSERT YOUR API KEY HERE>)
+
+co = cohere.Client()
+
+stream = co.chat_stream(
+    message="Write me a haiku about the synergies between Cohere and AgentOps"
+)
+
+for event in stream:
+    if event.event_type == "text-generation":
+        print(event.text, end='')
+
+agentops.end_session('Success')
+```
+</details>
+
+
+### LlamaIndex 🦙
+
 (Coming Soon)
 
+## Time travel debugging 🔮
+
+(coming soon!)
+
+## Agent Arena 🥊
+
+(coming soon!)
+
+## Evaluations Roadmap 🧭
+
+| Platform                                                                     | Dashboard                                  | Evals                                  |
+| ---------------------------------------------------------------------------- | ------------------------------------------ | -------------------------------------- |
+| ✅ Python SDK                                                                | ✅ Multi-session and Cross-session metrics | ✅ Custom eval metrics                 |
+| 🚧 Evaluation builder API                                                    | ✅ Custom event tag tracking               | 🔜 Agent scorecards                    |
+| ✅ [Javascript/Typescript SDK](https://github.com/AgentOps-AI/agentops-node) | ✅ Session replays                         | 🔜 Evaluation playground + leaderboard |
+
+## Debugging Roadmap 🧭
+
+| Performance testing                       | Environments                                                                        | LLM Testing                                 | Reasoning and execution testing                   |
+| ----------------------------------------- | ----------------------------------------------------------------------------------- | ------------------------------------------- | ------------------------------------------------- |
+| ✅ Event latency analysis                 | 🔜 Non-stationary environment testing                                               | 🔜 LLM non-deterministic function detection | 🚧 Infinite loops and recursive thought detection |
+| ✅ Agent workflow execution pricing       | 🔜 Multi-modal environments                                                         | 🚧 Token limit overflow flags               | 🔜 Faulty reasoning detection                     |
+| 🚧 Success validators (external)          | 🔜 Execution containers                                                             | 🔜 Context limit overflow flags             | 🔜 Generative code validators                     |
+| 🔜 Agent controllers/skill tests          | ✅ Honeypot and prompt injection detection ([PromptArmor](https://promptarmor.com)) | 🔜 API bill tracking                        | 🔜 Error breakpoint analysis                      |
+| 🔜 Information context constraint testing | 🔜 Anti-agent roadblocks (i.e. Captchas)                                            | 🔜 CI/CD integration checks                 |                                                   |
+| 🔜 Regression testing                     | 🔜 Multi-agent framework visualization                                              |                                             |                                                   |
 
 ### Why AgentOps? 🤔
 
-Our mission is to bring your agent from protype to production.
+Our mission is to bring your agent from prototype to production.
 
-Agent developers often work with little to no visibility into agent testing performance. This means their agents never leave the lab. We're changing that. 
+Agent developers often work with little to no visibility into agent testing performance. This means their agents never leave the lab. We're changing that.
 
 AgentOps is the easiest way to evaluate, grade, and test agents. Is there a feature you'd like to see AgentOps cover? Just raise it in the issues tab, and we'll work on adding it to the roadmap.

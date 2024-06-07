@@ -4,10 +4,7 @@ from .log_config import logger
 import requests
 from requests.adapters import Retry, HTTPAdapter
 
-JSON_HEADER = {
-    "Content-Type": "application/json; charset=UTF-8",
-    "Accept": "*/*"
-}
+JSON_HEADER = {"Content-Type": "application/json; charset=UTF-8", "Accept": "*/*"}
 
 retry_config = Retry(total=5, backoff_factor=0.1)
 
@@ -25,12 +22,12 @@ class HttpStatus(Enum):
 
 class Response:
 
-    def __init__(self, status: HttpStatus = HttpStatus.UNKNOWN, body: Optional[dict] = None):
+    def __init__(
+        self, status: HttpStatus = HttpStatus.UNKNOWN, body: Optional[dict] = None
+    ):
         self.status: HttpStatus = status
         self.code: int = status.value
-        self.body = body
-        if not self.body:
-            self.body = {}
+        self.body = body if body else {}
 
     def parse(self, res: requests.models.Response):
         res_body = res.json()
@@ -61,8 +58,14 @@ class Response:
 class HttpClient:
 
     @staticmethod
-    def post(url: str, payload: bytes, api_key: Optional[str] = None, parent_key: Optional[str] = None,
-             header=None) -> Response:
+    def post(
+        url: str,
+        payload: bytes,
+        api_key: Optional[str] = None,
+        parent_key: Optional[str] = None,
+        jwt: Optional[str] = None,
+        header=None,
+    ) -> Response:
         result = Response()
         try:
             # Create request session with retries configured
@@ -70,38 +73,41 @@ class HttpClient:
             request_session.mount(url, HTTPAdapter(max_retries=retry_config))
 
             if api_key is not None:
-                JSON_HEADER["X-Agentops-Auth"] = api_key
+                JSON_HEADER["X-Agentops-Api-Key"] = api_key
 
             if parent_key is not None:
                 JSON_HEADER["X-Agentops-Parent-Key"] = parent_key
 
-            res = request_session.post(url, data=payload,
-                                       headers=JSON_HEADER, timeout=20)
+            if jwt is not None:
+                JSON_HEADER["Authorization"] = f"Bearer {jwt}"
+
+            res = request_session.post(
+                url, data=payload, headers=JSON_HEADER, timeout=20
+            )
 
             result.parse(res)
         except requests.exceptions.Timeout:
             result.code = 408
             result.status = HttpStatus.TIMEOUT
-            logger.warning(
-                '🖇 AgentOps: Could not post data - connection timed out')
+            logger.warning("Could not post data - connection timed out")
         except requests.exceptions.HTTPError as e:
             try:
                 result.parse(e.response)
-            except:
+            except Exception:
                 result = Response()
                 result.code = e.response.status_code
                 result.status = Response.get_status(e.response.status_code)
-                result.body = {'error': str(e)}
+                result.body = {"error": str(e)}
         except requests.exceptions.RequestException as e:
-            result.body = {'error': str(e)}
+            result.body = {"error": str(e)}
 
         if result.code == 401:
             logger.warning(
-                f'🖇 AgentOps: Could not post data - API server rejected your API key: {api_key}')
+                "Could not post data - API server rejected your API key: %s", api_key
+            )
         if result.code == 400:
-            logger.warning(f'🖇 AgentOps: Could not post data - {result.body}')
+            logger.warning("Could not post data - %s", result.body)
         if result.code == 500:
-            logger.warning(
-                f'🖇 AgentOps: Could not post data - internal server error')
+            logger.warning("Could not post data - internal server error")
 
         return result
